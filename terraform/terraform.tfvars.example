@@ -1,0 +1,27 @@
+# Copy this file to terraform.tfvars and fill in your values
+# Never commit terraform.tfvars to source control
+
+aws_region  = "us-east-1"
+environment = "prod"
+
+# Networking
+vpc_cidr             = "10.0.0.0/16"
+availability_zones   = ["us-east-1a", "us-east-1b", "us-east-1c"]
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
+
+# Compute
+instance_type        = "t3.micro"
+asg_min_size         = 2
+asg_max_size         = 6
+asg_desired_capacity = 2
+key_pair_name        = ""  # optional — leave empty if SSH not needed
+
+# Alerting thresholds
+alert_email          = "oncall@techstream.io"
+error_rate_threshold = 5      # percent
+latency_threshold_ms = 2000   # milliseconds (P99)
+cpu_threshold_percent = 80    # percent
+
+# AI Ops
+enable_devops_guru = true

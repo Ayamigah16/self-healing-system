@@ -1,0 +1,15 @@
+variable "name_prefix"          { type = string }
+variable "suffix"               { type = string }
+variable "vpc_id"               { type = string }
+variable "public_subnet_ids"    { type = list(string) }
+variable "private_subnet_ids"   { type = list(string) }
+variable "instance_type"        { type = string }
+variable "ami_id"               { type = string }
+variable "key_pair_name"        { type = string }
+variable "ec2_instance_profile" { type = string }
+variable "asg_min_size"         { type = number }
+variable "asg_max_size"         { type = number }
+variable "asg_desired_capacity" { type = number }
+variable "alb_sg_id"            { type = string }
+variable "ec2_sg_id"            { type = string }
+variable "log_group_name"       { type = string }
