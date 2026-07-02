@@ -17,9 +17,9 @@ ALB_URL=""
 REGION="${AWS_DEFAULT_REGION:-us-east-1}"
 
 log_info()  { echo -e "${CYAN}  ●  ${RESET}$*"; }
-log_pass()  { echo -e "${GREEN}  ✓  ${RESET}$*"; (( PASS++ )); }
-log_fail()  { echo -e "${RED}  ✗  ${RESET}$*"; (( FAIL++ )); }
-log_warn()  { echo -e "${YELLOW}  !  ${RESET}$*"; (( WARN++ )); }
+log_pass()  { echo -e "${GREEN}  ✓  ${RESET}$*"; (( ++PASS )); }
+log_fail()  { echo -e "${RED}  ✗  ${RESET}$*"; (( ++FAIL )); }
+log_warn()  { echo -e "${YELLOW}  !  ${RESET}$*"; (( ++WARN )); }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -56,7 +56,7 @@ if [[ -n "$ALB_URL" ]]; then
     check_endpoint "/metrics"  "200" "Prometheus Metrics"
 
     # Verify chaos endpoints exist but don't trigger them
-    chaos_code=$(curl -sf -o /dev/null -w "%{http_code}" --max-time 5 -X GET "$ALB_URL/chaos/reset" 2>/dev/null || echo "000")
+    chaos_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 -X GET "$ALB_URL/chaos/reset" 2>/dev/null || echo "000")
     [[ "$chaos_code" == "405" || "$chaos_code" == "200" ]] && \
         log_pass "Chaos endpoints reachable" || \
         log_warn "Chaos endpoints returned unexpected: HTTP $chaos_code"
