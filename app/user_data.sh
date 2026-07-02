@@ -41,7 +41,7 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << CW_CO
   "metrics": {
     "namespace": "TechStream/System",
     "append_dimensions": {
-      "InstanceId": "$${aws:InstanceId}",
+      "InstanceId": "$INSTANCE_ID",
       "AutoScalingGroupName": "$ASG_NAME"
     },
     "metrics_collected": {
