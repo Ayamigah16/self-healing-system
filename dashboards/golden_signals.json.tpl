@@ -1,8 +1,5 @@
 {
   "widgets": [
-
-    %{ ~}
-    // ── Header ──────────────────────────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 0, "width": 24, "height": 2,
@@ -10,12 +7,10 @@
         "markdown": "# TechStream — Golden Signals Dashboard\n**Region:** ${region} | **ASG:** ${asg_name} | **Self-Healing:** Active\n\nMonitors the four SRE Golden Signals: **Latency · Traffic · Errors · Saturation**"
       }
     },
-
-    // ── Row 1: ERRORS ────────────────────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 2, "width": 24, "height": 1,
-      "properties": { "markdown": "## 🔴 Golden Signal 1: Errors" }
+      "properties": { "markdown": "## Golden Signal 1: Errors" }
     },
     {
       "type": "metric",
@@ -64,12 +59,10 @@
         ]
       }
     },
-
-    // ── Row 2: LATENCY ───────────────────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 9, "width": 24, "height": 1,
-      "properties": { "markdown": "## 🟡 Golden Signal 2: Latency" }
+      "properties": { "markdown": "## Golden Signal 2: Latency" }
     },
     {
       "type": "metric",
@@ -79,10 +72,10 @@
         "view": "timeSeries",
         "region": "${region}",
         "metrics": [
-          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p99",  "period": 60, "label": "p99",  "color": "#d62728" }],
-          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p95",  "period": 60, "label": "p95",  "color": "#ff7f0e" }],
-          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p50",  "period": 60, "label": "p50",  "color": "#2ca02c" }],
-          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "Average", "period": 60, "label": "avg", "color": "#1f77b4" }]
+          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p99",     "period": 60, "label": "p99",  "color": "#d62728" }],
+          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p95",     "period": 60, "label": "p95",  "color": "#ff7f0e" }],
+          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "p50",     "period": 60, "label": "p50",  "color": "#2ca02c" }],
+          ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${alb_suffix}", { "stat": "Average", "period": 60, "label": "avg",  "color": "#1f77b4" }]
         ],
         "annotations": {
           "horizontal": [{ "color": "#ff0000", "label": "p99 Threshold (2s)", "value": 2 }]
@@ -98,9 +91,9 @@
         "view": "timeSeries",
         "region": "${region}",
         "metrics": [
-          ["TechStream/App", "ResponseTimeMs", { "stat": "p99",  "period": 60, "label": "App p99 ms",  "color": "#d62728" }],
-          ["TechStream/App", "ResponseTimeMs", { "stat": "p50",  "period": 60, "label": "App p50 ms",  "color": "#2ca02c" }],
-          ["TechStream/App", "ResponseTimeMs", { "stat": "Average", "period": 60, "label": "App avg ms", "color": "#1f77b4" }]
+          ["TechStream/App", "ResponseTimeMs", { "stat": "p99",     "period": 60, "label": "App p99 ms",  "color": "#d62728" }],
+          ["TechStream/App", "ResponseTimeMs", { "stat": "p50",     "period": 60, "label": "App p50 ms",  "color": "#2ca02c" }],
+          ["TechStream/App", "ResponseTimeMs", { "stat": "Average", "period": 60, "label": "App avg ms",  "color": "#1f77b4" }]
         ],
         "yAxis": { "left": { "min": 0 } }
       }
@@ -115,12 +108,10 @@
         ]
       }
     },
-
-    // ── Row 3: TRAFFIC ───────────────────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 16, "width": 24, "height": 1,
-      "properties": { "markdown": "## 🟢 Golden Signal 3: Traffic" }
+      "properties": { "markdown": "## Golden Signal 3: Traffic" }
     },
     {
       "type": "metric",
@@ -165,12 +156,10 @@
         ]
       }
     },
-
-    // ── Row 4: SATURATION ────────────────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 23, "width": 24, "height": 1,
-      "properties": { "markdown": "## 🔵 Golden Signal 4: Saturation" }
+      "properties": { "markdown": "## Golden Signal 4: Saturation" }
     },
     {
       "type": "metric",
@@ -180,7 +169,7 @@
         "view": "timeSeries",
         "region": "${region}",
         "metrics": [
-          ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "CPU %", "color": "#1f77b4" }],
+          ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "CPU %",     "color": "#1f77b4" }],
           ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", "${asg_name}", { "stat": "Maximum", "period": 60, "label": "CPU Max %", "color": "#ff7f0e" }]
         ],
         "annotations": {
@@ -213,19 +202,17 @@
         "view": "timeSeries",
         "region": "${region}",
         "metrics": [
-          ["AWS/AutoScaling", "GroupInServiceInstances", "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "InService",   "color": "#2ca02c" }],
-          ["AWS/AutoScaling", "GroupDesiredCapacity",    "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "Desired",     "color": "#1f77b4" }],
-          ["AWS/AutoScaling", "GroupPendingInstances",   "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "Pending",     "color": "#ff7f0e" }],
-          ["AWS/AutoScaling", "GroupTerminatingInstances","AutoScalingGroupName","${asg_name}", { "stat": "Average", "period": 60, "label": "Terminating", "color": "#d62728" }]
+          ["AWS/AutoScaling", "GroupInServiceInstances",  "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "InService",   "color": "#2ca02c" }],
+          ["AWS/AutoScaling", "GroupDesiredCapacity",     "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "Desired",     "color": "#1f77b4" }],
+          ["AWS/AutoScaling", "GroupPendingInstances",    "AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "Pending",     "color": "#ff7f0e" }],
+          ["AWS/AutoScaling", "GroupTerminatingInstances","AutoScalingGroupName", "${asg_name}", { "stat": "Average", "period": 60, "label": "Terminating", "color": "#d62728" }]
         ]
       }
     },
-
-    // ── Row 5: SELF-HEALING METRICS ──────────────────────────────────────────
     {
       "type": "text",
       "x": 0, "y": 30, "width": 24, "height": 1,
-      "properties": { "markdown": "## ⚡ Self-Healing Metrics" }
+      "properties": { "markdown": "## Self-Healing Metrics" }
     },
     {
       "type": "metric",
@@ -235,9 +222,9 @@
         "view": "timeSeries",
         "region": "${region}",
         "metrics": [
-          ["TechStream/Remediation", "RemediationAttempt", { "stat": "Sum",   "period": 300, "label": "Attempts",       "color": "#ff7f0e" }],
-          ["TechStream/Remediation", "RestartSuccess",     { "stat": "Sum",   "period": 300, "label": "Restart Success","color": "#2ca02c" }],
-          ["TechStream/Remediation", "RestartFailed",      { "stat": "Sum",   "period": 300, "label": "Restart Failed", "color": "#d62728" }]
+          ["TechStream/Remediation", "RemediationAttempt", { "stat": "Sum", "period": 300, "label": "Attempts",        "color": "#ff7f0e" }],
+          ["TechStream/Remediation", "RestartSuccess",     { "stat": "Sum", "period": 300, "label": "Restart Success", "color": "#2ca02c" }],
+          ["TechStream/Remediation", "RestartFailed",      { "stat": "Sum", "period": 300, "label": "Restart Failed",  "color": "#d62728" }]
         ]
       }
     },
@@ -264,6 +251,5 @@
         "view": "table"
       }
     }
-
   ]
 }

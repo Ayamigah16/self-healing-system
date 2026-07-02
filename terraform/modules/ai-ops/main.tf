@@ -36,6 +36,11 @@ resource "aws_devopsguru_resource_collection" "main" {
 resource "aws_devopsguru_service_integration" "main" {
   count = var.enable_devops_guru ? 1 : 0
 
+  kms_server_side_encryption {
+    type          = "AWS_OWNED_KMS_KEY"
+    opt_in_status = "ENABLED"
+  }
+
   logs_anomaly_detection {
     opt_in_status = "ENABLED"
   }

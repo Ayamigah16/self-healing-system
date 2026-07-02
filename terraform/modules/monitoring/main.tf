@@ -122,9 +122,9 @@ resource "aws_cloudwatch_metric_alarm" "latency_p99_high" {
   threshold           = var.latency_threshold_ms / 1000.0 # ALB metric is in seconds
   metric_name         = "TargetResponseTime"
   namespace           = "AWS/ApplicationELB"
-  period              = 60
-  statistic           = "p99"
-  dimensions          = { LoadBalancer = var.alb_arn_suffix }
+  period             = 60
+  extended_statistic = "p99"
+  dimensions         = { LoadBalancer = var.alb_arn_suffix }
 
   alarm_actions      = [var.sns_topic_arn]
   ok_actions         = [var.sns_topic_arn]
