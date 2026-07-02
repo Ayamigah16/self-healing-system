@@ -13,8 +13,8 @@ SERVICE_NAME="techstream"
 echo "=== TechStream bootstrap starting at $(date) ==="
 
 # ─── System packages ─────────────────────────────────────────────────────────
-dnf update -y
-dnf install -y python3.11 python3.11-pip git stress-ng wget curl jq
+dnf update -y --allowerasing || dnf update -y --skip-broken || true
+dnf install -y python3.11 python3.11-pip git stress-ng wget curl jq --allowerasing
 
 # ─── CloudWatch Agent ─────────────────────────────────────────────────────────
 wget -q https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
