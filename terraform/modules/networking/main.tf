@@ -39,22 +39,6 @@ resource "aws_subnet" "private" {
   tags = { Name = "${var.name_prefix}-private-${var.availability_zones[count.index]}" }
 }
 
-# ─── Elastic IPs + NAT Gateways (one per AZ for HA) ──────────────────────────
-resource "aws_eip" "nat" {
-  count  = length(var.public_subnet_cidrs)
-  domain = "vpc"
-  tags   = { Name = "${var.name_prefix}-nat-eip-${count.index}" }
-}
-
-resource "aws_nat_gateway" "nat" {
-  count         = length(var.public_subnet_cidrs)
-  allocation_id = aws_eip.nat[count.index].id
-  subnet_id     = aws_subnet.public[count.index].id
-
-  tags = { Name = "${var.name_prefix}-nat-${count.index}" }
-  depends_on = [aws_internet_gateway.igw]
-}
-
 # ─── Route Tables ─────────────────────────────────────────────────────────────
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -73,14 +57,11 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+# Private subnets have no internet route (no NAT Gateway).
+# Reserved for future stateful workloads (e.g. RDS). EC2 runs in public subnets.
 resource "aws_route_table" "private" {
   count  = length(aws_subnet.private)
   vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[count.index].id
-  }
 
   tags = { Name = "${var.name_prefix}-rt-private-${count.index}" }
 }
@@ -159,7 +140,7 @@ resource "aws_flow_log" "main" {
 
 resource "aws_cloudwatch_log_group" "flow_logs" {
   name              = "/aws/vpc/${var.name_prefix}/flow-logs"
-  retention_in_days = 30
+  retention_in_days = 7
 }
 
 resource "aws_iam_role" "flow_logs" {

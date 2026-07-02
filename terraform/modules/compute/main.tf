@@ -97,7 +97,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "alb_logs" {
     status = "Enabled"
     filter { prefix = "" }
 
-    expiration { days = 30 }
+    expiration { days = 7 }
   }
 }
 
@@ -139,17 +139,14 @@ resource "aws_launch_template" "app" {
   image_id      = local.ami
   instance_type = var.instance_type
 
-  dynamic "key_name" {
-    for_each = var.key_pair_name != "" ? [var.key_pair_name] : []
-    content { }
-  }
+  key_name = var.key_pair_name != "" ? var.key_pair_name : null
 
   iam_instance_profile {
     name = var.ec2_instance_profile
   }
 
   network_interfaces {
-    associate_public_ip_address = false
+    associate_public_ip_address = true  # no NAT Gateway; SG restricts port 5000 to ALB only
     security_groups             = [var.ec2_sg_id]
   }
 
@@ -161,7 +158,7 @@ resource "aws_launch_template" "app" {
 
   monitoring { enabled = true } # Detailed CloudWatch monitoring
 
-  user_data = base64encode(templatefile("${path.module}/../../app/user_data.sh", {
+  user_data = base64encode(templatefile("${path.module}/user_data.sh", {
     log_group_name = var.log_group_name
     region         = data.aws_region.current.name
   }))
@@ -187,7 +184,7 @@ resource "aws_autoscaling_group" "app" {
   min_size            = var.asg_min_size
   max_size            = var.asg_max_size
   desired_capacity    = var.asg_desired_capacity
-  vpc_zone_identifier = var.private_subnet_ids
+  vpc_zone_identifier = var.public_subnet_ids
 
   launch_template {
     id      = aws_launch_template.app.id

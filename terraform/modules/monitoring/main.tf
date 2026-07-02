@@ -6,18 +6,18 @@
 # ─── Log Groups ───────────────────────────────────────────────────────────────
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/techstream/${var.name_prefix}/app"
-  retention_in_days = 30
+  retention_in_days = 7
   tags              = { Name = "${var.name_prefix}-app-logs" }
 }
 
 resource "aws_cloudwatch_log_group" "nginx" {
   name              = "/techstream/${var.name_prefix}/nginx"
-  retention_in_days = 14
+  retention_in_days = 7
 }
 
 resource "aws_cloudwatch_log_group" "remediation" {
   name              = "/techstream/${var.name_prefix}/remediation"
-  retention_in_days = 90
+  retention_in_days = 14
 }
 
 # ─── Log Metric Filters — extract Golden Signal metrics from logs ──────────────

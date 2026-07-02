@@ -4,24 +4,24 @@
 aws_region  = "us-east-1"
 environment = "prod"
 
-# Networking
+# Networking — 2 AZs, no NAT Gateway (EC2 runs in public subnets behind ALB)
 vpc_cidr             = "10.0.0.0/16"
-availability_zones   = ["us-east-1a", "us-east-1b", "us-east-1c"]
-public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
+availability_zones   = ["us-east-1a", "us-east-1b"]
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24"]
 
-# Compute
+# Compute — single instance at rest; ASG scales on load
 instance_type        = "t3.micro"
-asg_min_size         = 2
-asg_max_size         = 6
-asg_desired_capacity = 2
-key_pair_name        = ""  # optional — leave empty if SSH not needed
+asg_min_size         = 1
+asg_max_size         = 4
+asg_desired_capacity = 1
+key_pair_name        = ""  # SSM-only access; set a key name only if SSH is needed
 
 # Alerting thresholds
-alert_email          = "oncall@techstream.io"
-error_rate_threshold = 5      # percent
-latency_threshold_ms = 2000   # milliseconds (P99)
-cpu_threshold_percent = 80    # percent
+alert_email           = "oncall@techstream.io"
+error_rate_threshold  = 5      # percent
+latency_threshold_ms  = 2000   # milliseconds (P99)
+cpu_threshold_percent = 80     # percent
 
-# AI Ops
-enable_devops_guru = true
+# AI Ops — set true to enable Amazon DevOps Guru (incurs per-resource-hour charges)
+enable_devops_guru = false
