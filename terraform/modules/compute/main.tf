@@ -53,11 +53,13 @@ resource "aws_s3_bucket_policy" "alb_logs" {
 }
 
 data "aws_iam_policy_document" "alb_logs" {
+  # Pre-Aug-2022 regions (eu-west-1, us-east-1, etc.) require the regional ELB
+  # service account as an AWS principal, not the elasticloadbalancing service principal.
   statement {
     effect = "Allow"
     principals {
-      type        = "Service"
-      identifiers = ["elasticloadbalancing.amazonaws.com"]
+      type        = "AWS"
+      identifiers = [data.aws_elb_service_account.main.arn]
     }
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.alb_logs.arn}/alb-access-logs/AWSLogs/*"]
@@ -177,6 +179,10 @@ resource "aws_launch_template" "app" {
 }
 
 data "aws_region" "current" {}
+
+# Resolves the regional ELB service account ARN — required for ALB access log
+# bucket policies in regions created before August 2022 (e.g. eu-west-1, us-east-1).
+data "aws_elb_service_account" "main" {}
 
 # ─── Auto Scaling Group ───────────────────────────────────────────────────────
 resource "aws_autoscaling_group" "app" {
