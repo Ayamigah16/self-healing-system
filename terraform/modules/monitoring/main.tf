@@ -25,7 +25,7 @@ resource "aws_cloudwatch_log_group" "remediation" {
 # Error rate: count 5xx responses from the application
 resource "aws_cloudwatch_log_metric_filter" "http_5xx" {
   name           = "${var.name_prefix}-http-5xx-filter"
-  pattern        = "[..., status_code=5*, ...]"
+  pattern        = "{ $.status_code >= 500 }"
   log_group_name = aws_cloudwatch_log_group.app.name
 
   metric_transformation {
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_log_metric_filter" "http_5xx" {
 
 resource "aws_cloudwatch_log_metric_filter" "http_all" {
   name           = "${var.name_prefix}-http-all-filter"
-  pattern        = "[..., status_code, ...]"
+  pattern        = "{ $.status_code >= 100 }"
   log_group_name = aws_cloudwatch_log_group.app.name
 
   metric_transformation {
