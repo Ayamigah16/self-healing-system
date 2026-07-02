@@ -20,7 +20,7 @@ output "asg_name" {
 
 output "sns_topic_arn" {
   description = "ARN of the SNS topic used for incident notifications"
-  value       = module.automation.sns_topic_arn
+  value       = aws_sns_topic.incidents.arn
 }
 
 output "remediation_lambda_arn" {

@@ -1,44 +1,8 @@
 ################################################################################
 # Automation Module
-# SNS · EventBridge · Lambda Remediation · Lambda RCA
+# EventBridge · Lambda Remediation · Lambda RCA
+# SNS topic lives in the root module (shared with monitoring to avoid a cycle)
 ################################################################################
-
-# ─── SNS Topic — incident notifications ───────────────────────────────────────
-resource "aws_sns_topic" "incidents" {
-  name = "${var.name_prefix}-incidents"
-  tags = { Name = "${var.name_prefix}-incidents" }
-}
-
-resource "aws_sns_topic_subscription" "email" {
-  topic_arn = aws_sns_topic.incidents.arn
-  protocol  = "email"
-  endpoint  = var.alert_email
-}
-
-# Allow CloudWatch to publish to this topic
-resource "aws_sns_topic_policy" "cloudwatch" {
-  arn = aws_sns_topic.incidents.arn
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowCloudWatchAlarms"
-        Effect = "Allow"
-        Principal = { Service = "cloudwatch.amazonaws.com" }
-        Action   = "SNS:Publish"
-        Resource = aws_sns_topic.incidents.arn
-      },
-      {
-        Sid    = "AllowEventBridge"
-        Effect = "Allow"
-        Principal = { Service = "events.amazonaws.com" }
-        Action   = "SNS:Publish"
-        Resource = aws_sns_topic.incidents.arn
-      }
-    ]
-  })
-}
 
 # ─── Lambda: Remediation ──────────────────────────────────────────────────────
 data "archive_file" "remediation" {
@@ -66,7 +30,7 @@ resource "aws_lambda_function" "remediation" {
     variables = {
       ASG_NAME        = var.asg_name
       ASG_MAX_SIZE    = tostring(var.asg_max_size)
-      SNS_TOPIC_ARN   = aws_sns_topic.incidents.arn
+      SNS_TOPIC_ARN   = var.sns_topic_arn
       REGION          = var.region
       LOG_LEVEL       = "INFO"
     }
@@ -91,7 +55,7 @@ resource "aws_cloudwatch_log_group" "rca_lambda" {
 
 resource "aws_lambda_function" "rca_analysis" {
   function_name    = "${var.name_prefix}-rca-analysis"
-  filename         = data.archive_file.rca.output_base64sha256 != "" ? data.archive_file.rca.output_path : data.archive_file.rca.output_path
+  filename         = data.archive_file.rca.output_path
   source_code_hash = data.archive_file.rca.output_base64sha256
   handler          = "handler.lambda_handler"
   runtime          = "python3.12"
@@ -101,7 +65,7 @@ resource "aws_lambda_function" "rca_analysis" {
 
   environment {
     variables = {
-      SNS_TOPIC_ARN = aws_sns_topic.incidents.arn
+      SNS_TOPIC_ARN = var.sns_topic_arn
       REGION        = var.region
       LOG_LEVEL     = "INFO"
     }
@@ -172,7 +136,7 @@ resource "aws_lambda_permission" "allow_eventbridge_rca" {
 
 # ─── SNS → Lambda trigger for CloudWatch alarm SNS notifications ─────────────
 resource "aws_sns_topic_subscription" "remediation_lambda" {
-  topic_arn = aws_sns_topic.incidents.arn
+  topic_arn = var.sns_topic_arn
   protocol  = "lambda"
   endpoint  = aws_lambda_function.remediation.arn
 }
@@ -182,5 +146,5 @@ resource "aws_lambda_permission" "allow_sns_remediation" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.remediation.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = aws_sns_topic.incidents.arn
+  source_arn    = var.sns_topic_arn
 }

@@ -1,5 +1,5 @@
 output "sns_topic_arn" {
-  value = aws_sns_topic.incidents.arn
+  value = var.sns_topic_arn
 }
 
 output "remediation_lambda_arn" {

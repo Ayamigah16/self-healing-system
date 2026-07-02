@@ -29,3 +29,7 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# deploy.sh-generated copies of app/ source (source of truth is app/)
+terraform/server.py
+terraform/modules/compute/user_data.sh
