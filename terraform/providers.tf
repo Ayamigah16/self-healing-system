@@ -31,10 +31,11 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "TechStream-SelfHealing"
-      Environment = var.environment
-      ManagedBy   = "Terraform"
-      Owner       = "platform-team"
+      Project              = "TechStream-SelfHealing"
+      Environment          = var.environment
+      ManagedBy            = "Terraform"
+      Owner                = "platform-team"
+      "devops-guru-default" = "TechStream-SelfHealing"
     }
   }
 }

@@ -26,7 +26,7 @@ resource "aws_devopsguru_resource_collection" "main" {
   type = "AWS_TAGS"
 
   tags {
-    app_boundary_key   = "Project"
+    app_boundary_key   = "devops-guru-default"
     tag_values         = ["TechStream-SelfHealing"]
   }
 }
