@@ -144,7 +144,7 @@ if [[ -n "$ALB_URL" ]]; then
     echo ""
     log_info "Verifying application health..."
     sleep 30  # Wait for instances to pass health checks
-    "$SCRIPT_DIR/verify.sh" --alb-url "$ALB_URL"
+    "$SCRIPT_DIR/verify.sh" --alb-url "$ALB_URL" --region "$REGION"
 fi
 
 echo ""
