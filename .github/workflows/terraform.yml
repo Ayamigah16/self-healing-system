@@ -22,10 +22,14 @@ permissions:
   pull-requests: write
 
 env:
-  TF_VERSION:    "1.8.4"
+  TF_VERSION:     "1.8.4"
   PYTHON_VERSION: "3.12"
-  AWS_REGION:    "us-east-1"
-  TF_DIR:        "terraform"
+  AWS_REGION:     "eu-west-1"
+  TF_DIR:         "terraform"
+  # Terraform variable overrides — non-sensitive values inline, sensitive via secrets
+  TF_VAR_aws_region:         "eu-west-1"
+  TF_VAR_availability_zones: '["eu-west-1a","eu-west-1b","eu-west-1c"]'
+  TF_VAR_alert_email:        ${{ secrets.TF_ALERT_EMAIL }}
 
 jobs:
   # ─── Validate ───────────────────────────────────────────────────────────────
@@ -189,4 +193,4 @@ jobs:
           echo "dashboard=$(terraform -chdir=$TF_DIR output -raw cloudwatch_dashboard_url)" >> $GITHUB_OUTPUT
 
       - name: Run Verification
-        run: ./scripts/verify.sh --alb-url ${{ steps.outputs.outputs.alb_url }}
+        run: ./scripts/verify.sh --alb-url ${{ steps.outputs.outputs.alb_url }} --region ${{ env.AWS_REGION }}
